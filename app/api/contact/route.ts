@@ -1,24 +1,45 @@
-import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { NextRequest, NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
-export async function POST(req: Request) {
-  const { name, email, message } = await req.json();
+export async function POST(req: NextRequest) {
+  try {
+    const { name, email, message } = await req.json();
 
-  const transporter = nodemailer.createTransport({
-    host: 'your-mail-server.com',
-    port: 587,
-    auth: {
-      user: 'your-email@domain.com',
-      pass: 'your-password',
-    },
-  });
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { error: "All fields are required" },
+        { status: 400 }
+      );
+    }
 
-  await transporter.sendMail({
-    from: email,
-    to: 'your-email@domain.com',
-    subject: `Portfolio Contact: ${name}`,
-    text: message,
-  });
+    // Configure Nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: Number(process.env.EMAIL_PORT),
+      secure: false, // true for 465, false for 587
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
-  return NextResponse.json({ success: true });
+    // Email options
+    const mailOptions = {
+      from: `"${name}" <${email}>`,
+      to: process.env.EMAIL_TO,
+      subject: `New Contact Message from ${name}`,
+      text: message,
+      html: `<p><strong>Name:</strong> ${name}</p>
+             <p><strong>Email:</strong> ${email}</p>
+             <p><strong>Message:</strong><br/>${message}</p>`,
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    return NextResponse.json({ success: true, message: "Message sent successfully" });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Failed to send message" }, { status: 500 });
+  }
 }

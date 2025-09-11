@@ -1,50 +1,44 @@
 "use client";
-import { useState } from "react";
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await fetch("/api/contact", {
-      method: "POST",
-      body: JSON.stringify(form),
-      headers: { "Content-Type": "application/json" },
-    });
-    alert("Message sent!");
-  };
-
   return (
-    <section className="py-20 px-6 bg-gray-100">
-      <h2 className="text-3xl font-semibold mb-6">Contact Me</h2>
-      <form onSubmit={handleSubmit} className="max-w-xl space-y-4">
-        <input
-          type="text"
-          placeholder="Name"
-          className="w-full p-3 border rounded"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-3 border rounded"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          required
-        />
-        <textarea
-          placeholder="Message"
-          className="w-full p-3 border rounded h-32"
-          value={form.message}
-          onChange={(e) => setForm({ ...form, message: e.target.value })}
-          required
-        />
-        <button type="submit" className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800">
-          Send Message
-        </button>
-      </form>
+    <section
+      id="contact"
+      className="py-20 px-6 bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100"
+    >
+      <div className="max-w-3xl mx-auto text-center">
+        <h2 className="text-3xl md:text-4xl font-semibold mb-8">
+          Get in Touch
+        </h2>
+        <p className="mb-8 text-lg md:text-xl leading-relaxed">
+          I’m open to collaboration, freelance projects, and full-time opportunities.
+          Feel free to drop me a message and I’ll get back to you as soon as possible.
+        </p>
+
+        <form className="flex flex-col gap-4">
+          <input
+            type="text"
+            placeholder="Your Name"
+            className="px-4 py-3 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="email"
+            placeholder="Your Email"
+            className="px-4 py-3 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <textarea
+            placeholder="Your Message"
+            rows={5}
+            className="px-4 py-3 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded transition-colors"
+          >
+            Send Message
+          </button>
+        </form>
+      </div>
     </section>
   );
 }
