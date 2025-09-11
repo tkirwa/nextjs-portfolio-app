@@ -1,16 +1,13 @@
-// import { PrismaClient } from "@/lib/generated/prisma";
-// const prisma = new PrismaClient();
-
 import { prisma } from "@/lib/prisma";
 
 async function main() {
   console.log("🌱 Starting database seeding...");
 
-  // 1. Seed Tags
+  // 1️⃣ Seed Tags
   const tagNames = ["Next.js", "Tailwind", "MySQL", "Prisma", "Shadcn UI", "TypeScript"];
 
   const tagRecords = await Promise.all(
-    tagNames.map(async (name) =>
+    tagNames.map((name) =>
       prisma.tag.upsert({
         where: { name },
         update: {},
@@ -18,17 +15,16 @@ async function main() {
       })
     )
   );
-
   console.log(`✅ Seeded ${tagRecords.length} tags`);
 
-  // 2. Seed Projects
+  // 2️⃣ Seed Projects
   const projects = [
     {
-      title: "NCC Dashboard",
+      title: "NCC Dashboard – Contact Centre",
       slug: "ncc-dashboard",
       description: "Role-based performance tracking aligned with Kenya Power’s strategic goals.",
       url: "https://ncc.example.com",
-      image: "/images/ncc-dashboard.png",
+      image: "https://images.unsplash.com/photo-1668396292026-4ff360c16355",
       tags: ["Next.js", "MySQL", "Prisma"],
     },
     {
@@ -36,7 +32,7 @@ async function main() {
       slug: "ecommerce-scaffold",
       description: "Automated Next.js setup with seed logic and modular folder structure.",
       url: "https://ecommerce.example.com",
-      image: "/images/ecommerce-scaffold.png",
+      image: "https://images.unsplash.com/photo-1683313107043-283d0319a11e",
       tags: ["Next.js", "Tailwind", "TypeScript"],
     },
     {
@@ -44,8 +40,16 @@ async function main() {
       slug: "portfolio-platform",
       description: "Modular Next.js portfolio with Shadcn UI, Tailwind, and Prisma integration.",
       url: "https://portfolio.example.com",
-      image: "/images/portfolio-platform.png",
+      image: "https://images.unsplash.com/photo-1663882658055-40f1d4249867",
       tags: ["Next.js", "Tailwind", "Shadcn UI", "Prisma"],
+    },
+    {
+      title: "Car Dealership & Autoparts",
+      slug: "car-dealership-autoparts",
+      description: "Platform for buying and selling cars and auto parts with inventory management.",
+      url: "https://cardealership.example.com",
+      image: "https://images.unsplash.com/photo-1625969893982-3d5417fa2d9e",
+      tags: ["Next.js", "Tailwind", "MySQL"],
     },
   ];
 
@@ -66,11 +70,10 @@ async function main() {
         },
       },
     });
-
     console.log(`📌 Project created: ${createdProject.title}`);
   }
 
-  // 3. Seed Skills
+  // 3️⃣ Seed Skills
   const skillNames = [
     "Next.js",
     "TypeScript",
@@ -85,7 +88,7 @@ async function main() {
   ];
 
   const skillRecords = await Promise.all(
-    skillNames.map(async (name) =>
+    skillNames.map((name) =>
       prisma.skill.upsert({
         where: { name },
         update: {},
@@ -93,10 +96,9 @@ async function main() {
       })
     )
   );
-
   console.log(`✅ Seeded ${skillRecords.length} skills`);
 
-  console.log("🌱 Seeding completed.");
+  console.log("🌱 Database seeding completed successfully!");
 }
 
 main()
