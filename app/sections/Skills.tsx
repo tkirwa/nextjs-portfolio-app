@@ -1,16 +1,27 @@
-const skills = [
-  "Next.js", "TypeScript", "Tailwind CSS", "Shadcn UI", "Prisma", "PostgreSQL",
-  "DevOps", "Automation", "Operational Strategy", "Team Leadership"
-];
+import { prisma } from "@/lib/prisma";
 
-export default function Skills() {
+const skills = await prisma.skill.findMany();
+
+export default async function Skills() {
+  const skills = await prisma.skill.findMany({
+    orderBy: { createdAt: "asc" },
+  });
+
   return (
-    <section className="py-20 px-6 bg-white">
-      <h2 className="text-3xl font-semibold mb-6">Skills</h2>
-      <ul className="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {skills.map((skill, idx) => (
-          <li key={idx} className="bg-gray-200 px-4 py-2 rounded text-center font-medium">
-            {skill}
+    <section
+      id="skills"
+      className="py-20 px-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100"
+    >
+      <h2 className="text-3xl md:text-4xl font-semibold mb-12 text-center md:text-left">
+        Skills
+      </h2>
+      <ul className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        {skills.map((skill) => (
+          <li
+            key={skill.id}
+            className="flex items-center gap-2 bg-gray-200 dark:bg-gray-800 px-4 py-2 rounded text-center font-medium text-gray-800 dark:text-gray-100 shadow-sm hover:shadow-md transition-shadow"
+          >
+            {skill.name}
           </li>
         ))}
       </ul>
