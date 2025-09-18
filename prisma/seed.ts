@@ -1,4 +1,7 @@
-import { prisma } from "@/lib/prisma";
+import { PrismaClient } from "../lib/generated/prisma";
+import { faker } from "@faker-js/faker";
+
+const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Starting database seeding...");
@@ -97,6 +100,35 @@ async function main() {
     )
   );
   console.log(`✅ Seeded ${skillRecords.length} skills`);
+
+  // 4️⃣ Seed Users
+  const adminUser = await prisma.user.upsert({
+    where: { email: "admin@example.com" },
+    update: {},
+    create: {
+      email: "admin@example.com",
+      name: "Admin User",
+      password: "admin123", // In a real app, hash this!
+      role: "admin",
+      phone: faker.phone.number(),
+    },
+  });
+  console.log(`✅ Seeded admin user with email: ${adminUser.email}`);
+
+  const regularUsers = Array.from({ length: 5 }).map(() => ({
+    email: faker.internet.email(),
+    name: faker.person.fullName(),
+    password: "user123", // In a real app, hash this!
+    role: "user",
+    phone: faker.phone.number(),
+  }));
+
+  const createdUsers = await prisma.user.createMany({
+    data: regularUsers,
+    skipDuplicates: true,
+  });
+
+  console.log(`✅ Seeded ${createdUsers.count} regular users.`);
 
   console.log("🌱 Database seeding completed successfully!");
 }

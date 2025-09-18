@@ -1,25 +1,17 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
-import { useDebouncedCallback } from 'use-debounce';
+import { useDebouncedCallback } from "use-debounce";
+import { Input } from "@/components/ui/input";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
-interface SearchInputProps {
-  placeholder: string;
-  selectedModel: string;
-}
-
-export function SearchInput({ placeholder, selectedModel }: SearchInputProps) {
+export function SearchInput({ placeholder }: { placeholder: string }) {
   const searchParams = useSearchParams();
-  const { replace } = useRouter();
   const pathname = usePathname();
-  const [searchTerm, setSearchTerm] = useState(searchParams.get("query") || "");
+  const { replace } = useRouter();
 
-  // Debounce the URL update to avoid flooding the server with requests.
-  // The search will only trigger after the user stops typing for 300ms.
   const handleSearch = useDebouncedCallback((term) => {
     const params = new URLSearchParams(searchParams);
-    params.set("model", selectedModel);
     if (term) {
       params.set("query", term);
     } else {
@@ -29,15 +21,15 @@ export function SearchInput({ placeholder, selectedModel }: SearchInputProps) {
   }, 300);
 
   return (
-    <input
-      type="text"
-      placeholder={placeholder}
-      className="flex-grow p-3 rounded-md border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 transition-colors"
-      onChange={(e) => {
-        setSearchTerm(e.target.value);
-        handleSearch(e.target.value);
-      }}
-      defaultValue={searchTerm}
-    />
+    <div className="relative flex-1">
+      <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+      <Input
+        type="search"
+        placeholder={placeholder}
+        className="w-full pl-9"
+        onChange={(e) => handleSearch(e.target.value)}
+        defaultValue={searchParams.get("query")?.toString()}
+      />
+    </div>
   );
 }
